@@ -1,0 +1,14 @@
+﻿{
+	"version": "1.0.0-*",
+	"description": "Abstraction of message queuing logic.",
+	"authors": [ "Igor Stanisic", "Nemanja Tomic" ],
+	"tags": [ "queuer", "rabbitmq" ],
+	"projectUrl": "",
+	"licenseUrl": "",
+	"frameworks": {
+		"net451": { }
+	},
+	"dependencies": {
+		"Newtonsoft.Json": "8.0.2"
+	}
+}
