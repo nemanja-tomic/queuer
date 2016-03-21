@@ -2,6 +2,7 @@
 using System.Text;
 using Newtonsoft.Json;
 using RabbitMQ.Client.Events;
+using Tkn.Queuer.Common;
 using Tkn.Queuer.Interface;
 using Tkn.Queuer.Models;
 
@@ -14,10 +15,14 @@ namespace Tkn.Queuer.RabbitMQ {
 		public void Subscribe(string queue, Action<T> handler) {
 			var consumer = new EventingBasicConsumer(Model);
 			consumer.Received += (model, args) => {
-				var message = Encoding.Default.GetString(args.Body);
+				try {
+					var message = Encoding.Default.GetString(args.Body);
 
-				handler(convertFromJson(message));
-				Model.BasicAck(args.DeliveryTag, false);
+					handler(convertFromJson(message));
+					Model.BasicAck(args.DeliveryTag, false);
+				} catch (QueueHandlerException ex) {
+					Model.BasicReject(args.DeliveryTag, ex.Requeue);
+				}
 			};
 			Model.BasicConsume(queue, false, consumer);
 		}
