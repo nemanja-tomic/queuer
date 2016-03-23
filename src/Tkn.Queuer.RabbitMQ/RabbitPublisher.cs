@@ -13,7 +13,7 @@ namespace Tkn.Queuer.RabbitMQ {
 
 			var json = convertToJson(model);
 			var messageBuffer = Encoding.Default.GetBytes(json);
-			Model.BasicPublish(exchange, routingKey, properties, messageBuffer);
+			Model.BasicPublish(exchange, routingKey.ToLower(), properties, messageBuffer);
 		}
 
 		string convertToJson(T model) {
