@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Tkn.Queuer.Common
+namespace Tkn.Queuer.Exceptions
 {
-    public class QueueHandlerException : Exception
+    public class QueueHandlerException : QueuerException
     {
 	    public bool Requeue { get; set; }
 
