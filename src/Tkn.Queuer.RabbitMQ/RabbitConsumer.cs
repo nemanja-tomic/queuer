@@ -1,30 +1,51 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Tkn.Queuer.Common;
+using Tkn.Queuer.Exceptions;
 using Tkn.Queuer.Interface;
 using Tkn.Queuer.Models;
 
 namespace Tkn.Queuer.RabbitMQ {
 	public class RabbitConsumer<T> : RabbitBase<T>, IQueueConsumer<T> where T : BaseQueueModel, new() {
 		public RabbitConsumer(QueueSettingsModel settings) : base(settings) {
-			Model.BasicQos(0, 1, false);
 		}
 
 		public void Subscribe(string queue, Action<T> handler) {
-			var consumer = new EventingBasicConsumer(Model);
+			if (!Connections.Any())
+				throw new QueuerException("There are no active RabbitMQ connections, please check QueueSettings.");
+			if (Connections.Count > 1)
+				throw new QueuerException("There are more than one active RabbitMQ connections. Please specify target virtual host in QueueSettings.");
+
+			var rabbitModel = Connections.First().Model;
+			consumeQueue(queue, handler, rabbitModel);
+		}
+
+		public void Subscribe(string queue, Action<T> handler, string virtualHost) {
+			var connection = Connections.FirstOrDefault(x => x.VirtualHost == virtualHost);
+			if (connection == null)
+				throw new QueuerException($"There are no active connections for virtual host [{virtualHost}], please check QueueSettings.");
+
+			var rabbitModel = connection.Model;
+			consumeQueue(queue, handler, rabbitModel);
+		}
+
+		void consumeQueue(string queue, Action<T> handler, IModel rabbitModel) {
+			rabbitModel.BasicQos(0, 1, false);
+			var consumer = new EventingBasicConsumer(rabbitModel);
 			consumer.Received += (model, args) => {
 				try {
 					var message = Encoding.Default.GetString(args.Body);
 
 					handler(convertFromJson(message));
-					Model.BasicAck(args.DeliveryTag, false);
+					rabbitModel.BasicAck(args.DeliveryTag, false);
 				} catch (QueueHandlerException ex) {
-					Model.BasicReject(args.DeliveryTag, ex.Requeue);
+					rabbitModel.BasicReject(args.DeliveryTag, ex.Requeue);
 				}
 			};
-			Model.BasicConsume(queue, false, consumer);
+			rabbitModel.BasicConsume(queue, false, consumer);
 		}
 
 		T convertFromJson(string json) {
