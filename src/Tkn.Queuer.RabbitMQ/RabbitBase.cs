@@ -25,7 +25,8 @@ namespace Tkn.Queuer.RabbitMQ {
 
 			JsonSettings = new JsonSerializerSettings {
 				ContractResolver = new GenericPropertyContractResolver(typeof(T)),
-				Formatting = Formatting.Indented
+				Formatting = Formatting.Indented,
+				MissingMemberHandling = MissingMemberHandling.Error
 			};
 
 			initializeRabbit();
