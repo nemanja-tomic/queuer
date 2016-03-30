@@ -30,27 +30,27 @@ namespace Tkn.Queuer.RabbitMQ.Logger {
 
 		public void Debug(string message) {
 			if (validLogLevel(LogLevel.Debug))
-				send(LogLevel.Debug.ToString().ToUpper(), message);
+				send(LogLevel.Debug, message);
 		}
 
 		public void Info(string message) {
 			if (validLogLevel(LogLevel.Info))
-				send(LogLevel.Info.ToString().ToUpper(), message);
+				send(LogLevel.Info, message);
 		}
 
 		public void Warn(string message) {
 			if (validLogLevel(LogLevel.Warn))
-				send(LogLevel.Warn.ToString().ToUpper(), message);
+				send(LogLevel.Warn, message);
 		}
 
 		public void Error(string message) {
 			if (validLogLevel(LogLevel.Error))
-				send(LogLevel.Error.ToString().ToUpper(), message);
+				send(LogLevel.Error, message);
 		}
 
 		public void Fatal(string message) {
 			if (validLogLevel(LogLevel.Fatal))
-				send(LogLevel.Fatal.ToString().ToUpper(), message);
+				send(LogLevel.Fatal, message);
 		}
 
 		#endregion
@@ -75,14 +75,14 @@ namespace Tkn.Queuer.RabbitMQ.Logger {
 			_model = _connection.CreateModel();
 		}
 
-		void send(string level, string message) {
+		void send(LogLevel level, string message) {
 			var properties = _model.CreateBasicProperties();
 			properties.Persistent = true;
 
 			var messageBuffer = Encoding.Default.GetBytes(message);
 			_model.BasicPublish(
 				LoggerConstants.EXCHANGE_NAME,
-				$"{_queueSettings.ApplicationName}.{level}",
+				$"{_queueSettings.ApplicationName}.{level.ToString().ToLower()}",
 				properties,
 				messageBuffer);
 		}
