@@ -2,6 +2,7 @@
 using RabbitMQ.Client;
 using Tkn.Queuer.Interface;
 using Tkn.Queuer.Models;
+using Tkn.Queuer.Models.Enums;
 
 namespace Tkn.Queuer.RabbitMQ.Logger {
 	public class RabbitLogger : IQueueLogger {
@@ -9,6 +10,7 @@ namespace Tkn.Queuer.RabbitMQ.Logger {
 		IConnection _connection;
 		ConnectionFactory _connectionFactory;
 		IModel _model;
+		readonly LogLevel _logLevel;
 
 		#region Constructors
 
@@ -18,19 +20,46 @@ namespace Tkn.Queuer.RabbitMQ.Logger {
 			initializeRabbit();
 		}
 
+		public RabbitLogger(LoggerQueueSettingsModel settings) : this(settings as QueueSettingsModel) {
+			_logLevel = settings.LogLevel;
+		}
+
 		#endregion
 
 		#region Interface implementation
 
+		public void Debug(string message) {
+			if (validLogLevel(LogLevel.Debug))
+				send(LogLevel.Debug.ToString().ToUpper(), message);
+		}
+
 		public void Info(string message) {
-			send(LoggerConstants.INFO, message);
+			if (validLogLevel(LogLevel.Info))
+				send(LogLevel.Info.ToString().ToUpper(), message);
+		}
+
+		public void Warn(string message) {
+			if (validLogLevel(LogLevel.Warn))
+				send(LogLevel.Warn.ToString().ToUpper(), message);
 		}
 
 		public void Error(string message) {
-			send(LoggerConstants.ERROR, message);
+			if (validLogLevel(LogLevel.Error))
+				send(LogLevel.Error.ToString().ToUpper(), message);
+		}
+
+		public void Fatal(string message) {
+			if (validLogLevel(LogLevel.Fatal))
+				send(LogLevel.Fatal.ToString().ToUpper(), message);
 		}
 
 		#endregion
+
+		bool validLogLevel(LogLevel level) {
+			if (_logLevel == LogLevel.Off)
+				return false;
+			return (_logLevel == LogLevel.All) || (level <= _logLevel);
+		}
 
 		void initializeRabbit() {
 			_connectionFactory = new ConnectionFactory {
@@ -51,7 +80,11 @@ namespace Tkn.Queuer.RabbitMQ.Logger {
 			properties.Persistent = true;
 
 			var messageBuffer = Encoding.Default.GetBytes(message);
-			_model.BasicPublish(LoggerConstants.EXCHANGE_NAME, $"{_queueSettings.ApplicationName}.{level}", properties, messageBuffer);
+			_model.BasicPublish(
+				LoggerConstants.EXCHANGE_NAME,
+				$"{_queueSettings.ApplicationName}.{level}",
+				properties,
+				messageBuffer);
 		}
 	}
 }
