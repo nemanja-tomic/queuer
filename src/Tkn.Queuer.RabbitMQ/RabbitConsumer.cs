@@ -43,6 +43,8 @@ namespace Tkn.Queuer.RabbitMQ {
 					rabbitModel.BasicAck(args.DeliveryTag, false);
 				} catch (QueueHandlerException ex) {
 					rabbitModel.BasicReject(args.DeliveryTag, ex.Requeue);
+				} catch (Exception) {
+					rabbitModel.BasicReject(args.DeliveryTag, true);
 				}
 			};
 			rabbitModel.BasicConsume(queue, false, consumer);
