@@ -58,7 +58,7 @@ namespace Tkn.Queuer.RabbitMQ.Logger {
 		bool validLogLevel(LogLevel level) {
 			if (_logLevel == LogLevel.Off)
 				return false;
-			return (_logLevel == LogLevel.All) || (level <= _logLevel);
+			return (_logLevel == LogLevel.All) || (level >= _logLevel);
 		}
 
 		void initializeRabbit() {
