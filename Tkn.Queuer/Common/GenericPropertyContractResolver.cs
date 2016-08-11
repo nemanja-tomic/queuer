@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -16,14 +17,14 @@ namespace Tkn.Queuer.Common {
 
 			var declaringType = member.DeclaringType;
 
-			if ((declaringType == null) || !declaringType.IsGenericType ||
+			if ((declaringType == null) || !declaringType.GetTypeInfo().IsGenericType ||
 				(declaringType.GetGenericTypeDefinition() != _genericTypeDefinition)) {
 				return baseProperty;
 			}
 
-			var declaringGenericType = declaringType.GetGenericArguments()[0];
+			var declaringGenericType = declaringType.GetGenericArguments().FirstOrDefault();
 
-			if (IsGenericMember(member))
+			if (IsGenericMember(member) && (declaringGenericType != null))
 				baseProperty.PropertyName = ResolvePropertyName(declaringGenericType.Name);
 
 			return baseProperty;

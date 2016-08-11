@@ -1,0 +1,20 @@
+{
+	"version": "1.0.0-*",
+	"description": "RabbitMQ implementation of message queueing abstraction.",
+	"authors": [ "Igor Stanisic", "Nemanja Tomic" ],
+	"packOptions": {
+		"tags": [ "" ],
+		"projectUrl": "",
+		"licenseUrl": ""
+	},
+	"frameworks": {
+		"net45": {
+			"dependencies": {
+				"RabbitMQ.Client": "3.6.1"
+			}
+		}
+	},
+	"dependencies": {
+		"Tkn.Queuer": "1.0.0-*"
+	}
+}

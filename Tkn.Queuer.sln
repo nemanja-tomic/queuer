@@ -1,18 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2FC41B5A-CAA7-4FA5-B79C-2C3742DE55EF}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Tkn.Queuer", "Tkn.Queuer\Tkn.Queuer.xproj", "{1BA2E6E6-2698-491A-8FAC-6695B784329D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F528E3E5-C5D2-4450-B81E-640327FD9C65}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Tkn.Queuer", "src\Tkn.Queuer\Tkn.Queuer.xproj", "{1BA2E6E6-2698-491A-8FAC-6695B784329D}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Tkn.Queuer.RabbitMQ", "src\Tkn.Queuer.RabbitMQ\Tkn.Queuer.RabbitMQ.xproj", "{4C31D0DF-2221-4418-A07D-3000A84128DF}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Tkn.Queuer.RabbitMQ", "Tkn.Queuer.RabbitMQ\Tkn.Queuer.RabbitMQ.xproj", "{4C31D0DF-2221-4418-A07D-3000A84128DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,9 +24,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{1BA2E6E6-2698-491A-8FAC-6695B784329D} = {2FC41B5A-CAA7-4FA5-B79C-2C3742DE55EF}
-		{4C31D0DF-2221-4418-A07D-3000A84128DF} = {2FC41B5A-CAA7-4FA5-B79C-2C3742DE55EF}
 	EndGlobalSection
 EndGlobal
